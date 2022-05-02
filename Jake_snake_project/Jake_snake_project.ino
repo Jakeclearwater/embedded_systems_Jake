@@ -25,7 +25,7 @@ void setup() {
   Serial.begin(115200);  // set the same baud rate, kept as sounded complex and didn't want to change
   initialize();        
   calibrateJoystick(); 
-  showSnakeMessage(); 
+   
 }
 //base game loop
 void loop() {
@@ -272,16 +272,6 @@ void dumpGameBoard() {
 
 // game messages, kept the same as video because it wouldn't effect game much and looks cool
 
-const PROGMEM bool snakeMessage[8][56] = {
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-};
 
 const PROGMEM bool gameOverMessage[8][90] = {
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -409,35 +399,7 @@ const PROGMEM bool digits[][8][8] = {
 };
 
 
-// scrolls the 'snake' message around the matrix
-void showSnakeMessage() {
-  [&] {
-    for (int d = 0; d < sizeof(snakeMessage[0]) - 7; d++) {
-      for (int col = 0; col < 8; col++) {
-        delay(messageSpeed);
-        for (int row = 0; row < 8; row++) {
-          matrix.setLed(0, row, col, pgm_read_byte(&(snakeMessage[row][col + d])));
-        }
-      }
 
-      if (analogRead(Pin::joystickY) < joystickHome.y - joystickThreshold
-              || analogRead(Pin::joystickY) > joystickHome.y + joystickThreshold
-              || analogRead(Pin::joystickX) < joystickHome.x - joystickThreshold
-              || analogRead(Pin::joystickX) > joystickHome.x + joystickThreshold) {
-        return; 
-      }
-    }
-  }();
-
-  matrix.clearDisplay(0);
-
-  
-  while (analogRead(Pin::joystickY) < joystickHome.y - joystickThreshold
-          || analogRead(Pin::joystickY) > joystickHome.y + joystickThreshold
-          || analogRead(Pin::joystickX) < joystickHome.x - joystickThreshold
-          || analogRead(Pin::joystickX) > joystickHome.x + joystickThreshold) {}
-
-}
 
 
 // scrolls the 'game over' message around the matrix
